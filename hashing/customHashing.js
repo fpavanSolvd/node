@@ -30,18 +30,30 @@ class HashTable {
     return customHash(key) % this.size;
   }
 
-  // Insert a key-value pair into the hash table.
+// Insert a key-value pair into the hash table.
   insert(key, value) {
     const index = this.#hash(key);
+
     if (!this.table[index]) {
       // If the index is empty, create a new linked list.
       this.table[index] = new Node(key, value);
     } else {
-      // If the index has collisions, add to the linked list.
       let currentNode = this.table[index];
-      while (currentNode.next) {
+
+      // Check if the key already exists in the linked list.
+      while (currentNode) {
+        if (currentNode.key === key) {
+          // Update the value associated with the key.
+          currentNode.value = value;
+          return; // Key updated, no need to add a new node.
+        }
+        if (!currentNode.next) {
+          break; // Reached the end of the linked list.
+        }
         currentNode = currentNode.next;
       }
+
+      // If the key doesn't exist in the linked list, add it at the end.
       currentNode.next = new Node(key, value);
     }
   }
